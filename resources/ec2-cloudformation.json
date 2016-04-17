@@ -1,0 +1,104 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "Creates a simple EC2 to get a prototype server up and running",
+
+  "Parameters" : {
+    "KeyName": {
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instance",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "ConstraintDescription" : "must be the name of an existing EC2 KeyPair."
+    },
+
+    "InstanceType" : {
+      "Description" : "Standard EC2",
+      "Type" : "String",
+      "Default" : "m1.small",
+      "AllowedValues" : [ "m1.small", "m1.medium" ]
+,
+      "ConstraintDescription" : "must be a valid EC2 instance type."
+    },
+
+    "SSHLocation" : {
+      "Description" : "The IP address range that can be used to SSH to the EC2 instances",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "Default": "0.0.0.0/0",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+   }
+  },
+
+  "Mappings" : {
+    "AWSInstanceType2Arch" : {
+      "m1.small"    : { "Arch" : "PV64"   },
+      "m1.medium"   : { "Arch" : "PV64"   }
+    },
+
+    "AWSInstanceType2NATArch" : {
+      "m1.small"    : { "Arch" : "NATPV64"   },
+      "m1.medium"   : { "Arch" : "NATPV64"   }
+    }
+,
+    "AWSRegionArch2AMI" : {
+      "us-east-1"        : {"PV64" : "ami-22111148", "HVM64" : "ami-08111162", "HVMG2" : "ami-ebcec381"},
+      "us-west-2"        : {"PV64" : "ami-792bc219", "HVM64" : "ami-c229c0a2", "HVMG2" : "ami-0f28c06f"},
+      "us-west-1"        : {"PV64" : "ami-0e087a6e", "HVM64" : "ami-1b0f7d7b", "HVMG2" : "ami-ab9defcb"},
+      "eu-west-1"        : {"PV64" : "ami-a5368cd6", "HVM64" : "ami-31328842", "HVMG2" : "ami-d1d652a2"},
+      "eu-central-1"     : {"PV64" : "ami-2bde3944", "HVM64" : "ami-e2df388d", "HVMG2" : "ami-5240a73d"},
+      "ap-northeast-1"   : {"PV64" : "ami-37020959", "HVM64" : "ami-f80e0596", "HVMG2" : "ami-34a9a35a"},
+      "ap-northeast-2"   : {"PV64" : "NOT_SUPPORTED", "HVM64" : "ami-6598510b", "HVMG2" : "NOT_SUPPORTED"},
+      "ap-southeast-1"   : {"PV64" : "ami-ff0cc79c", "HVM64" : "ami-e90dc68a", "HVMG2" : "ami-6f6ca70c"},
+      "ap-southeast-2"   : {"PV64" : "ami-f5210196", "HVM64" : "ami-f2210191", "HVMG2" : "ami-88c1e1eb"},
+      "sa-east-1"        : {"PV64" : "ami-661e930a", "HVM64" : "ami-1e159872", "HVMG2" : "NOT_SUPPORTED"},
+      "cn-north-1"       : {"PV64" : "ami-08ef2465", "HVM64" : "ami-49e22924", "HVMG2" : "NOT_SUPPORTED"}
+    }
+
+  },
+
+  "Resources" : {
+    "EC2Instance" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
+        "KeyName" : { "Ref" : "KeyName" },
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+                          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] }
+      }
+    },
+
+    "InstanceSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable SSH access via port 22",
+        "SecurityGroupIngress" : [ {
+          "IpProtocol" : "tcp",
+          "FromPort" : "22",
+          "ToPort" : "22",
+          "CidrIp" : { "Ref" : "SSHLocation"}
+        } ]
+      }
+    }
+  },
+
+  "Outputs" : {
+    "InstanceId" : {
+      "Description" : "InstanceId of the newly created EC2 instance",
+      "Value" : { "Ref" : "EC2Instance" }
+    },
+    "AZ" : {
+      "Description" : "Availability Zone of the newly created EC2 instance",
+      "Value" : { "Fn::GetAtt" : [ "EC2Instance", "AvailabilityZone" ] }
+    },
+    "PublicDNS" : {
+      "Description" : "Public DNSName of the newly created EC2 instance",
+      "Value" : { "Fn::GetAtt" : [ "EC2Instance", "PublicDnsName" ] }
+    },
+    "PublicIP" : {
+      "Description" : "Public IP address of the newly created EC2 instance",
+      "Value" : { "Fn::GetAtt" : [ "EC2Instance", "PublicIp" ] }
+    }
+  }
+}
