@@ -2,9 +2,14 @@
 import settings
 
 from scripts import fearless_github
+from scripts import slack
 
-print "Imported GitHub"
+project_name = "devops-autocreate-3"
 
 print "Calling github script..."
-fearless_github.create_repo("testing-automated-project-1")
-print "Done calling!"
+fearless_github.create_repo(project_name)
+print "Done github!"
+
+print "Creating slack channel..."
+slack.create_channel(project_name)
+print "Done slack!"
