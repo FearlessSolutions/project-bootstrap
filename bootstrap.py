@@ -3,9 +3,9 @@ import settings
 
 from scripts import fearless_github
 from scripts import slack
-from scripts import ec2
+from scripts import aws
 
-project_name = "devops-autocreate-3"
+project_name = "devops-autocreate-4"
 
 print "Calling github script..."
 #fearless_github.create_repo(project_name)
@@ -16,5 +16,5 @@ print "Creating slack channel..."
 print "Done slack!"
 
 print "Creating EC2..."
-#
+#aws.launch_ec2(project_name)
 print "Done ec2!"
