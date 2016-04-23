@@ -34,7 +34,7 @@ print "Received project name: "+project_name
 response = "Here are the results:\n"
 if create_slack:
   print "# Creating slack channel '"+project_name+"'"
-  #response += slack.create_channel(project_name) + "\n"
+  response += slack.create_channel(project_name) + "\n"
 else:
   print "NOT creating slack channel."
 
@@ -46,7 +46,7 @@ else:
 
 if create_aws:
   print "# Creating EC2 instance"
-  #response += aws.launch_ec2(project_name) + "\n"
+  response += aws.launch_ec2(project_name) + "\n"
 else:
   print "NOT creating EC2 instance."
 
