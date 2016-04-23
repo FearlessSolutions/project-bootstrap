@@ -19,34 +19,36 @@ def confirm(message):
 with open('resources/fearless.txt', 'r') as fearless:
   print fearless.read()
 
-print "This application will assist you in bootstrapping an application."
+print "Let's get started!"
+
 project_name = "devops-"+''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(7))
-project_name = raw_input( "Give a name for your project ["+project_name+"]: ") or project_name
+project_name = raw_input( "First, give a name for your project, or hit [enter] for default name ["+project_name+"]: ") or project_name
 project_name = re.sub("[^0-9a-zA-Z]","-",project_name)
 
-create_slack = confirm("Create a slack channel with title '"+project_name+"'?")
-create_github = confirm("Create a github repository with name '"+project_name+"'?")
-create_aws = confirm("Create a dev EC2 instance name '"+project_name+"'?")
+create_slack = confirm("1) Should I create a SLACK channel with title '"+project_name+"'?")
+create_github = confirm("2) Should I create a GITHUB repository with name '"+project_name+"'?")
+create_aws = confirm("3) Should I create an EC2 instance named '"+project_name+"'?")
 
 print "Received project name: "+project_name
 
+response = "Here are the results:\n"
 if create_slack:
-  print "Creating slack channel '"+project_name+"'..."
-  #slack.create_channel(project_name)
-  print "Successfully created slack channel!"
+  print "# Creating slack channel '"+project_name+"'"
+  #response += slack.create_channel(project_name) + "\n"
 else:
   print "NOT creating slack channel."
 
 if create_github:
-  print "Calling github script..."
-  #fearless_github.create_repo(project_name)
-  print "Done github!"
+  print "# Creating GitHub repository"
+  response += fearless_github.create_repo(project_name) + "\n"
 else:
   print "NOT creating github repo."
 
 if create_aws:
-  print "Creating EC2..."
-#aws.launch_ec2(project_name)
-  print "Done ec2!"
+  print "# Creating EC2 instance"
+  #response += aws.launch_ec2(project_name) + "\n"
 else:
   print "NOT creating EC2 instance."
+
+print "\n\n### Completed all integrations."
+print response

@@ -25,9 +25,9 @@
 [6C[48;5;97m        [49m
 [6C[48;5;97m        [49m
 [6C[48;5;97m        [49m
-[6C[48;5;97m        [49m
-[6C[48;5;97m        [49m
-[6C[48;5;97m        [49m
-[6C[48;5;97m      [49m
+[6C[48;5;97m        [49m      This application will assist you in bootstrapping a devops environment
+[6C[48;5;97m        [49m        * Creates Slack channel
+[6C[48;5;97m        [49m        * Creates EC2 Instance
+[6C[48;5;97m      [49m          * Creates Github Repository
 [6C[48;5;97m   [49m
 [6C[48;5;97m [49m
