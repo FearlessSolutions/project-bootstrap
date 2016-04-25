@@ -33,7 +33,12 @@ def launch_ec2(name):
         'ParameterKey': 'InstanceAvailabilityZone',
         'ParameterValue': 'us-east-1a',
         'UsePreviousValue': True
+      },{
+        'ParameterKey': 'InstanceNameTag',
+        'ParameterValue': name,
+        'UsePreviousValue': True
       },
+
     ],
     TimeoutInMinutes=30,
     OnFailure='ROLLBACK',
@@ -45,4 +50,5 @@ def launch_ec2(name):
     ]
   )
 
+  return "AWS Instance creation in progress."
 

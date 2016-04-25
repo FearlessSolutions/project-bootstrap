@@ -22,3 +22,4 @@ def create_channel(name):
     if channel['name'] == name:
       for user in users:
         slack.channels.invite(channel['id'], user)
+  return "Successfully created slack channel "+name
